@@ -1,0 +1,21 @@
+services:
+  webapp:
+    build: .
+    # 'expose' torna a porta acessível para outros containers na mesma rede (como o Nginx),
+    # mas NÃO a publica no seu computador. Isso resolve o conflito de portas.
+    expose:
+      - "5000"
+
+  nginx:
+    # Usa a imagem oficial do Nginx
+    image: nginx:latest
+    ports:
+      # Mapeia a porta 80 do seu computador para a porta 80 do container Nginx.
+      # Este é nosso único ponto de entrada.
+      - "80:80"
+    volumes:
+      # Monta nosso arquivo de configuração dentro do container Nginx
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      # Garante que o serviço webapp inicie antes do Nginx
+      - webapp
